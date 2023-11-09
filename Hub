@@ -6,7 +6,7 @@ function DeathDr()
             break
         end
         
-        print("DeathDR function is running!")
+game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100
         -- จุดที่คุณต้องการเพิ่มการทำงานลงไป
         -- ...
         
