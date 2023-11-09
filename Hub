@@ -2,41 +2,16 @@ local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shl
 
 local Window = OrionLib:MakeWindow({Name = "Zol Client", HidePremium = false, SaveConfig = true, ConfigFolder = "SSSak"})
 --///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-_G.DeathDR = true
-function DeathDR()
-     while true do
-         if not _G.DeathDR then -- ถ้าสถานะเป็น false, break loop
-             break
-         end
-         local player = game.Players.LocalPlayer
-local lastDeathPosition
-
--- ตรวจสอบว่าผู้เล่นใช้แพลตฟอร์มที่รองรับ Touch Input หรือไม่
-local isTouchDevice = game:GetService("UserInputService").TouchEnabled
-
--- ฟังก์ชันที่จะทำงานเมื่อผู้เล่นทักทายหรือไม่
-local function onRespawnAction(triggered)
-    if triggered and lastDeathPosition then
-        wait(0.5) -- รอที่ตัวละครจะ Spawn ก่อน
-        player.Character.HumanoidRootPart.CFrame = CFrame.new(lastDeathPosition) -- ย้ายผู้เล่นไปยังตำแหน่งที่ตายล่าสุด
+_G.test = false
+while wait(1) do
+    if _G.test then
+        repeat
+            game.Players.LocalPlayer.Character.Humanoid.walkspeed = 100
+            wait(0.3) -- สามารถแทนที่กับฟังก์ชันที่คุณต้องการทำซ้ำเมื่อเปิด Toggle
+        until not _G.test
+        print("Toggle is off, loop stopped.")
     end
 end
-
-player.CharacterAdded:Connect(function(character)
-    local humanoid = character:WaitForChild("Humanoid")
-    humanoid.Died:Connect(function()
-        lastDeathPosition = character.HumanoidRootPart.Position
-    end)
-end)
-
--- เพิ่ม ContextActionService สำหรับเวอร์ชัน Touch เพื่อให้ผู้เล่นสามารถทำการ Respond ได้
-if isTouchDevice then
-    local CAS = game:GetService("ContextActionService")
-    CAS:BindAction("Respawn", onRespawnAction, false, Enum.UserInputType.Touch)
-end
-         wait(0.6) -- ควรใส่ระยะเวลาที่จะหยุดการทำงานระหว่างรอบ
-     end
- end
 --//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 local Tab = Window:MakeTab({
@@ -53,8 +28,5 @@ Tab:AddToggle({
 	Default = false,
 	Callback = function(Value)
         _G.DeathDR = Value
-        if _G.DeathDR then -- ถ้าสถานะเป็น true, เริ่ม coroutine
-            coroutine.wrap(DeathDR)()
-        end
 	end    
 })
