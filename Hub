@@ -3,19 +3,19 @@ local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shl
 local Window = OrionLib:MakeWindow({Name = "Zol Client", HidePremium = false, SaveConfig = true, ConfigFolder = "SSSak"})
 --///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 _G.test = false
-while wait(1) do
-    if _G.test then
-        while true do
-            game.Players.LocalPlayer,Character,Humanoid.WalkSpeed = 100
-            wait(1) -- สามารถแทนที่กับฟังก์ชันที่คุณต้องการทำซ้ำเมื่อเปิด Toggle
-            if not _G.test then
-                print("Toggle is off, loop stopped.")
-                break -- หยุด loop ได้ทันที
-            end
+function test()
+    while true do
+        if not _G.test then -- ถ้าสถานะเป็น false, break loop
+            break
         end
+        
+        print("DeathDR function is running!")
+        -- จุดที่คุณต้องการเพิ่มการทำงานลงไป
+        -- ...
+        
+        wait() -- ควรใส่ระยะเวลาที่จะหยุดการทำงานระหว่างรอบ
     end
 end
-
 --//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 local Tab = Window:MakeTab({
