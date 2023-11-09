@@ -5,26 +5,39 @@ function DeathDr()
         if not _G.DeathDr then -- ถ้าสถานะเป็น false, break loop
             break
         end
--- สร้างตัวแปรเพื่อเก็บจุดตายล่าสุด
-local lastDeathPosition = nil
-
--- ค้นหาผู้เล่นในเกม
+local TweenService = game:GetService("TweenService")
 local player = game.Players.LocalPlayer
+local lastDeathPosition = nil
 
 -- ตรวจสอบการเปลี่ยนแปลงของสถานะ (สถานะ = 15 คือตาย)
 player.Character.Humanoid.StateChanged:Connect(function(oldState, newState)
     if newState == Enum.HumanoidStateType.Dead then
         -- เมื่อตาย บันทึกจุดตายล่าสุด
-        lastDeathPosition = player.Character.Humanoid.RootPart.Position
+        lastDeathPosition = player.Character.HumanoidRootPart.CFrame
     end
 end)
 
--- ตรวจสอบการเกิดใหม่
 game.Players.PlayerAdded:Connect(function(player)
     player.CharacterAdded:Connect(function(character)
         -- หากมีจุดตายล่าสุด ให้เกิดที่จุดนั้น
-        if lastDeathPosition then 
-            character.Humanoid.RootPart.CFrame = lastDeathPosition
+        if lastDeathPosition then
+            local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+            if humanoidRootPart then
+                -- สร้างการทำงานของ tween
+                local tweenInfo = TweenInfo.new(
+                    2, -- ระยะเวลาในการทำงาน (2 วินาที)
+                    Enum.EasingStyle.Linear, -- ลักษณะของการเปลี่ยนแปลง
+                    Enum.EasingDirection.InOut, -- 방향
+                    0, -- จำนวนการทำซ้ำ
+                    false, -- เริ่มทำงานทันทีหรือไม่
+                    0 -- การหน่วงเวลาก่อนเริ่มเคลื่อนไหว
+                )
+                
+                local goal = {CFrame = lastDeathPosition}
+                local tween = TweenService:Create(humanoidRootPart, tweenInfo, goal)
+
+                tween:Play() -- เริ่มเคลื่อนไหว
+            end
         end
     end)
 end)
