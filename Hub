@@ -31,6 +31,9 @@ Tab:AddToggle({
 	Name = "Death direct",
 	Default = false,
 	Callback = function(Value)
-        _G.DeathDR = Value
+              _G.DeathDR = Value
+        if _G.DeathDR then -- ถ้าสถานะเป็น true, เริ่ม coroutine
+            coroutine.wrap(DeathDR)()
+        end
 	end    
 })
