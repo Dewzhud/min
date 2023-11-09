@@ -1,8 +1,8 @@
 --///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-_G.test = false
-function test()
+_G.DeathDr = false
+function DeathDr()
     while true do
-        if not _G.test then -- ถ้าสถานะเป็น false, break loop
+        if not _G.DeathDr then -- ถ้าสถานะเป็น false, break loop
             break
         end
         
@@ -33,9 +33,9 @@ Tab:AddToggle({
 	Name = "Death direct",
 	Default = false,
 	Callback = function(Value)
-              _G.test = Value
-        if _G.test then -- ถ้าสถานะเป็น true, เริ่ม coroutine
-            coroutine.wrap(test)()
+              _G.DeathDr = Value
+        if _G.DeathDr then -- ถ้าสถานะเป็น true, เริ่ม coroutine
+            coroutine.wrap(DeathDr)()
         end
 	end    
 })
