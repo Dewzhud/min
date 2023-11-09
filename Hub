@@ -26,58 +26,54 @@ local Window = Rayfield:CreateWindow({
     }
  })
 
+
+
  local Tab = Window:CreateTab("Client", 4483362458) -- Title, Image
  local Section = Tab:CreateSection("Our Client Function")
- local Button = Tab:CreateButton({
-    Name = "inf jump (on/off)",
-    Callback = function()
-        local player = game:GetService("Players").LocalPlayer
-        local heatSeekingEnabled = false
-        local walkWaitTime = 0.8 -- ระยะเวลาที่ต้องรอหากผู้เล่นเดิน
-        local rushDuration = 3 -- ระยะเวลาสำหรับพุ่งไปข้างหน้า
-        local rushSpeed = 50 -- ความเร็วในการพุ่ง
-        
-        local function startHeatSeeking()
-            local character = player.Character
-            local humanoid = character and character:FindFirstChild("Humanoid")
-            local rootPart = character and character:FindFirstChild("HumanoidRootPart")
-            
-            if humanoid and rootPart then
-                local prevState = humanoid:GetState()
-                
-                while heatSeekingEnabled do
-                    local currentState = humanoid:GetState()
-                    
-                    -- ตรวจสอบว่าผู้เล่นเดินหรือไม่
-                    if currentState == Enum.HumanoidStateType.Running and prevState ~= Enum.HumanoidStateType.Running then
-                        wait(walkWaitTime)
-                        local startTime = tick()
-                        local direction = humanoid.MoveDirection
-                        
-                        -- พุ่งเข้าหน้าตามทิศทางการเคลื่อนที่ของผู้เล่น
-                        while tick() - startTime < rushDuration do
-                            rootPart.Velocity = direction * rushSpeed
-                            wait()
-                        end
-                        
-                        -- หยุดการพุ่ง
-                        rootPart.Velocity = Vector3.new(0, 0, 0)
-                    end
-                    
-                    prevState = currentState
-                    wait()
-                end
-            end
-        end
-        
-        function _G.toggleHeatSeeking()
-            heatSeekingEnabled = not heatSeekingEnabled
-            
-            if heatSeekingEnabled then
-                startHeatSeeking()
-            end
-        end
-    end,
+ _G.DeathDR = false
+function DeathDR()
+     while true do
+         if not _G.DeathDR then -- ถ้าสถานะเป็น false, break loop
+             break
+         end
+         local player = game.Players.LocalPlayer
+local lastDeathPosition
+
+-- ตรวจสอบว่าผู้เล่นใช้แพลตฟอร์มที่รองรับ Touch Input หรือไม่
+local isTouchDevice = game:GetService("UserInputService").TouchEnabled
+
+-- ฟังก์ชันที่จะทำงานเมื่อผู้เล่นทักทายหรือไม่
+local function onRespawnAction(triggered)
+    if triggered and lastDeathPosition then
+        wait(0.5) -- รอที่ตัวละครจะ Spawn ก่อน
+        player.Character.HumanoidRootPart.CFrame = CFrame.new(lastDeathPosition) -- ย้ายผู้เล่นไปยังตำแหน่งที่ตายล่าสุด
+    end
+end
+
+player.CharacterAdded:Connect(function(character)
+    local humanoid = character:WaitForChild("Humanoid")
+    humanoid.Died:Connect(function()
+        lastDeathPosition = character.HumanoidRootPart.Position
+    end)
+end)
+
+-- เพิ่ม ContextActionService สำหรับเวอร์ชัน Touch เพื่อให้ผู้เล่นสามารถทำการ Respond ได้
+if isTouchDevice then
+    local CAS = game:GetService("ContextActionService")
+    CAS:BindAction("Respawn", onRespawnAction, false, Enum.UserInputType.Touch)
+end
+         wait(0.6) -- ควรใส่ระยะเวลาที่จะหยุดการทำงานระหว่างรอบ
+     end
+ end
+ 
+ local Toggle = Tab:CreateToggle({
+     Name = "Death DR",
+     CurrentValue = _G.DeathDR,
+     Flag = "Deathdirect",
+     Callback = function(Value)
+         _G.DeathDR = Value
+         if _G.DeathDR then -- ถ้าสถานะเป็น true, เริ่ม coroutine
+             coroutine.wrap(DeathDR)()
+         end
+     end,
  })
-
-
