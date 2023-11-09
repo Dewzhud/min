@@ -2,7 +2,7 @@ local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shl
 
 local Window = OrionLib:MakeWindow({Name = "Zol Client", HidePremium = false, SaveConfig = true, ConfigFolder = "SSSak"})
 --///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-_G.DeathDR = false
+_G.DeathDR = true
 function DeathDR()
      while true do
          if not _G.DeathDR then -- ถ้าสถานะเป็น false, break loop
