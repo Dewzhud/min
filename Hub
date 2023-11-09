@@ -6,7 +6,29 @@ function DeathDr()
             break
         end
         
-game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100
+-- สร้างตัวแปรเพื่อเก็บจุดตายล่าสุด
+local lastDeathPosition = nil
+
+-- ค้นหาผู้เล่นในเกม
+local player = game.Players.LocalPlayer
+
+-- ตรวจสอบการเปลี่ยนแปลงของสถานะ (สถานะ = 15 คือตาย)
+player.Character.Humanoid.StateChanged:Connect(function(oldState, newState)
+    if newState == Enum.HumanoidStateType.Dead then
+        -- เมื่อตาย บันทึกจุดตายล่าสุด
+        lastDeathPosition = player.Character.HumanoidRootPart.CFrame
+    end
+end)
+
+-- ตรวจสอบการเกิดใหม่
+game.Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        -- หากมีจุดตายล่าสุด ให้เกิดที่จุดนั้น
+        if lastDeathPosition then
+            character:WaitForChild("HumanoidRootPart").CFrame = lastDeathPosition
+        end
+    end)
+end)
         -- จุดที่คุณต้องการเพิ่มการทำงานลงไป
         -- ...
         
