@@ -5,13 +5,17 @@ local Window = OrionLib:MakeWindow({Name = "Zol Client", HidePremium = false, Sa
 _G.test = false
 while wait(1) do
     if _G.test then
-        repeat
-            game.Players.LocalPlayer.Character.Humanoid.walkspeed = 100
-            wait(0.3) -- สามารถแทนที่กับฟังก์ชันที่คุณต้องการทำซ้ำเมื่อเปิด Toggle
-        until not _G.test
-        print("Toggle is off, loop stopped.")
+        while true do
+            game.Players.LocalPlayer,Character,Humanoid.WalkSpeed = 100
+            wait(1) -- สามารถแทนที่กับฟังก์ชันที่คุณต้องการทำซ้ำเมื่อเปิด Toggle
+            if not _G.test then
+                print("Toggle is off, loop stopped.")
+                break -- หยุด loop ได้ทันที
+            end
+        end
     end
 end
+
 --//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 local Tab = Window:MakeTab({
