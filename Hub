@@ -13,13 +13,17 @@ local Section = Tab:AddSection({
 	Name = "Our Client function"
 })
 
-Tab:AddToggle({
-    Name = "🕷Spider",
-    Default = false,
-    Callback = function(Value)
-        _G.toggleSpider() -- เรียกฟังก์ชัน toggle ใน callback
-    end    
+Tab:AddButton({
+	Name = "🕷Spider",
+	Callback = function()
+      	_G.toggleSpider	
+  	end    
 })
+
+--[[
+Name = <string> - The name of the button.
+Callback = <function> - The function of the button.
+]]
 
 local toggleEnabled = false
 
