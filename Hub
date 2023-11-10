@@ -1,20 +1,11 @@
-
-
-Tab:AddToggle({
-    Name = "🕷Spider",
-    Default = false,
-    Callback = function(Value)
-        _G.toggleSpider -- เรียกฟังก์ชัน toggle ใน callback
-    end    
-})
-
---//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+while true do
 loadstring(game:HttpGet(('https://raw.githubusercontent.com/Dewzhud/min/main/function')))()
-wait(0.1)
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+wait(5.5)
+end
 
-local Window = OrionLib:MakeWindow({Name = "Zol Client", HidePremium = false, SaveConfig = true, ConfigFolder = "SSSak"})
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/Dewzhud/min/main/orion-%E0%B9%81%E0%B8%95%E0%B9%88%E0%B8%87')))()
+
+local Window = OrionLib:MakeWindow({Name = "🔮Zol Client", HidePremium = false, SaveConfig = true, ConfigFolder = "SSSak"})
 
 local Tab = Window:MakeTab({
 	Name = "📜Client",
@@ -25,3 +16,10 @@ local Section = Tab:AddSection({
 	Name = "Our Client function"
 })
 
+Tab:AddToggle({
+    Name = "🕷Spider",
+    Default = false,
+    Callback = function(Value)
+        _G.toggleSpider -- เรียกฟังก์ชัน toggle ใน callback
+    end    
+})
