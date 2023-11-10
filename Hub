@@ -1,8 +1,8 @@
 -- สร้างสคริปต์ใหม่ของคลาส Script
-local Script = Instance.new("Spider Wall")
+local SScript = Instance.new("Spider Wall")
 
 -- กำหนดโค้ดที่จะให้สคริปต์ทำงาน
-Script.Source = [[-- ตัวอย่าง local script สำหรับ Roblox Studio
+SScript.Source = [[-- ตัวอย่าง local script สำหรับ Roblox Studio
 
 local player = game.Players.LocalPlayer
 local humanoid = player.Character:WaitForChild("Humanoid")
@@ -44,7 +44,7 @@ humanoid.StateChanged:Connect(onStateChanged)
 ]]
 
 -- นำสคริปต์มาตั้งเป็นลูกของ Player's PlayerScripts (หรืออ็อบเจ็กต์ใด ๆ ที่เป็น Container ได้)
-Script.Parent = game.Players.LocalPlayer:WaitForChild("StarterPlayerScripts")
+SScript.Parent = game.Players.LocalPlayer:WaitForChild("StarterPlayerScripts")
 
 -- หรือถ้าต้องการให้สคริปต์ทำงานใน Player's Backpack
 -- myScript.Parent = game.Players.LocalPlayer.Backpack
