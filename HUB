@@ -8,18 +8,19 @@ local Tab = Window:MakeTab({
 })
 
 Tab:AddToggle({
-	Name = "This is a toggle!",
+	Name = "spider",
 	Default = false,
 	Callback = function(Value)
-		_G.Toggle(Value)
+		_G.Spider = Value
+Spider()
 	end    
 })
 
 -- ตั้งค่าเริ่มต้นของตัวแปร Toggle เป็น false
-_G.Toggle = false
+_G.Spider = false
 
 -- ตรวจสอบเงื่อนไข
-if _G.Toggle then
+if _G.Spider then
 
     print("Toggle เปิด")
 else
