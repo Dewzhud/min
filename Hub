@@ -1,7 +1,7 @@
-while true do
+
 loadstring(game:HttpGet(('https://raw.githubusercontent.com/Dewzhud/min/main/function')))()
-wait(5.5)
-end
+wait(0.2)
+
 
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/Dewzhud/min/main/orion-%E0%B9%81%E0%B8%95%E0%B9%88%E0%B8%87')))()
 
