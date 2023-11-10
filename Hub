@@ -1,47 +1,17 @@
---///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-local Players = game:GetService("Players")
-local TeleportService = game:GetService("TeleportService")
 
-local deathPosition -- ตำแหน่งที่ตาย
-
--- เมื่อผู้เล่นเข้าสู่เกม
-Players.PlayerAdded:Connect(function(player)
-    player.CharacterAdded:Connect(function(character)
-        character:WaitForChild("Humanoid").Died:Connect(function()
-            -- เมื่อผู้เล่นตาย
-            if deathPosition then
-                -- วาปผู้เล่นไปที่จุดตาย
-                TeleportService:Teleport(deathPosition)
-            else
-                warn("ไม่มีตำแหน่งที่ตาย")
-            end
-        end)
-    end)
-end)
-
--- เมื่อกด toggle
-function toggle()
-    _G.toggle = not _G.toggle -- สลับสถานะของ toggle
-    if _G.toggle then
-        print("Toggle เปิดอยู่")
-        deathPosition = Vector3.new(0, 5, 0)
-    else
-        print("Toggle ปิดอยู่")
-        deathPosition = nil
-    end
-end
 
 Tab:AddToggle({
-    Name = "💀Death Direct",
+    Name = "🕷Spider",
     Default = false,
     Callback = function(Value)
-        toggle() -- เรียกฟังก์ชัน toggle ใน callback
+        _G.toggleSpider -- เรียกฟังก์ชัน toggle ใน callback
     end    
 })
 
 --//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+loadstring(game:HttpGet(('https://raw.githubusercontent.com/Dewzhud/min/main/function')))()
+wait(0.1)
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
 local Window = OrionLib:MakeWindow({Name = "Zol Client", HidePremium = false, SaveConfig = true, ConfigFolder = "SSSak"})
