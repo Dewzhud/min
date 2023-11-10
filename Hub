@@ -1,52 +1,44 @@
 --///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-_G.DeathDr = ture
-function DeathDr()
-    while true do
-        if not _G.DeathDr then -- ถ้าสถานะเป็น false, break loop
-            break
-        end
-local TweenService = game:GetService("TweenService")
-local player = game.Players.LocalPlayer
-local lastDeathPosition = nil
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
 
--- ตรวจสอบการเปลี่ยนแปลงของสถานะ (สถานะ = 15 คือตาย)
-player.Character.Humanoid.StateChanged:Connect(function(oldState, newState)
-    if newState == Enum.HumanoidStateType.Dead then
-        -- เมื่อตาย บันทึกจุดตายล่าสุด
-        lastDeathPosition = player.Character.HumanoidRootPart.CFrame
-    end
-end)
+local deathPosition -- ตำแหน่งที่ตาย
 
-game.Players.PlayerAdded:Connect(function(player)
+-- เมื่อผู้เล่นเข้าสู่เกม
+Players.PlayerAdded:Connect(function(player)
     player.CharacterAdded:Connect(function(character)
-        -- หากมีจุดตายล่าสุด ให้เกิดที่จุดนั้น
-        if lastDeathPosition then
-            local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-            if humanoidRootPart then
-                -- สร้างการทำงานของ tween
-                local tweenInfo = TweenInfo.new(
-                    2, -- ระยะเวลาในการทำงาน (2 วินาที)
-                    Enum.EasingStyle.Linear, -- ลักษณะของการเปลี่ยนแปลง
-                    Enum.EasingDirection.InOut, -- 방향
-                    0, -- จำนวนการทำซ้ำ
-                    false, -- เริ่มทำงานทันทีหรือไม่
-                    0 -- การหน่วงเวลาก่อนเริ่มเคลื่อนไหว
-                )
-                
-                local goal = {CFrame = lastDeathPosition}
-                local tween = TweenService:Create(humanoidRootPart, tweenInfo, goal)
-
-                tween:Play() -- เริ่มเคลื่อนไหว
+        character:WaitForChild("Humanoid").Died:Connect(function()
+            -- เมื่อผู้เล่นตาย
+            if deathPosition then
+                -- วาปผู้เล่นไปที่จุดตาย
+                TeleportService:Teleport(deathPosition)
+            else
+                warn("ไม่มีตำแหน่งที่ตาย")
             end
-        end
+        end)
     end)
 end)
-        -- จุดที่คุณต้องการเพิ่มการทำงานลงไป
-        -- ...
-        
-        wait() -- ควรใส่ระยะเวลาที่จะหยุดการทำงานระหว่างรอบ
+
+-- เมื่อกด toggle
+function toggle()
+    _G.toggle = not _G.toggle -- สลับสถานะของ toggle
+    if _G.toggle then
+        print("Toggle เปิดอยู่")
+        deathPosition = Vector3.new(0, 5, 0)
+    else
+        print("Toggle ปิดอยู่")
+        deathPosition = nil
     end
 end
+
+Tab:AddToggle({
+    Name = "💀Death Direct",
+    Default = false,
+    Callback = function(Value)
+        toggle() -- เรียกฟังก์ชัน toggle ใน callback
+    end    
+})
+
 --//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -55,7 +47,7 @@ local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shl
 local Window = OrionLib:MakeWindow({Name = "Zol Client", HidePremium = false, SaveConfig = true, ConfigFolder = "SSSak"})
 
 local Tab = Window:MakeTab({
-	Name = "Client",
+	Name = "📜Client",
 	Icon = "",
 	PremiumOnly = false
 })
@@ -63,13 +55,3 @@ local Section = Tab:AddSection({
 	Name = "Our Client function"
 })
 
-Tab:AddToggle({
-	Name = "Death direct",
-	Default = false,
-	Callback = function(Value)
-              _G.DeathDr = Value
-        if _G.DeathDr then -- ถ้าสถานะเป็น true, เริ่ม coroutine
-            coroutine.wrap(DeathDr)()
-        end
-	end    
-})
