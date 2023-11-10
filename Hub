@@ -1,9 +1,6 @@
 
-loadstring(game:HttpGet(('https://raw.githubusercontent.com/Dewzhud/min/main/function')))()
-wait(0.2)
 
-
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/Dewzhud/min/main/orion-%E0%B9%81%E0%B8%95%E0%B9%88%E0%B8%87')))()
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
 local Window = OrionLib:MakeWindow({Name = "🔮Zol Client", HidePremium = false, SaveConfig = true, ConfigFolder = "SSSak"})
 
@@ -20,6 +17,123 @@ Tab:AddToggle({
     Name = "🕷Spider",
     Default = false,
     Callback = function(Value)
-        _G.toggleSpider -- เรียกฟังก์ชัน toggle ใน callback
+        _G.toggleSpider(Value) -- เรียกฟังก์ชัน toggle ใน callback
     end    
 })
+
+local toggleEnabled = false
+
+_G.toggle = function()
+    toggleEnabled = not toggleEnabled
+    print("Toggle " .. (toggleEnabled and "เปิด" or "ปิด"))
+
+    if not toggleEnabled then
+        -- ทำงานที่ต้องการหลังปิด toggle
+        OrionLib:MakeNotification({
+            Name = "Toggle",
+            Content = "Client Off",
+            Image = "rbxassetid://4483345998",
+            Time = 3
+        })
+        return -- หรือจะใช้ break ถ้าคุณอยู่ในลูป
+    end
+
+    OrionLib:MakeNotification({
+        Name = "Toggle",
+        Content = "Client On",
+        Image = "rbxassetid://4483345998",
+        Time = 3
+    })
+    
+
+end
+
+game:GetService("RunService").Stepped:Connect(function()
+    if toggleEnabled then
+        -- ทำงานที่ต้องการใน loop เมื่อ toggle เปิด
+        print("(Loop ทำงาน)")
+    else
+        -- ทำงานที่ต้องการใน loop เมื่อ toggle ปิด
+        print("(Loop หยุด)")
+        return -- หรือจะใช้ break ถ้าคุณอยู่ในลูป
+    end
+end)
+--////////////////////////////////////////////////////////////////////////////////////////////////[]
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local noClipEnabled = false
+
+_G.toggleNoClip = function()
+    noClipEnabled = not noClipEnabled
+
+    local notificationContent = noClipEnabled and "NoClip On" or "NoClip Off"
+    OrionLib:MakeNotification({
+        Name = "Noclip",
+        Content = notificationContent,
+        Image = "rbxassetid://4483345998",
+        Time = 3
+    })
+
+    if not noClipEnabled then
+        -- ทำงานที่ต้องการหลังปิด NoClip
+        return
+    end
+end
+
+game:GetService("RunService").Stepped:Connect(function()
+    if noClipEnabled then
+        -- ทำงาน NoClip เมื่อเปิด
+        for _, descendant in pairs(character:GetDescendants()) do
+            if descendant:IsA("BasePart") then
+                descendant.CanCollide = false
+            end
+        end
+    end
+
+    -- ทำงานที่ต้องการใน loop ทุกรอบ
+    print("(Loop ทำงาน)")
+end)
+--////////////////////////////////////////////////////////////////////////////////////////////////[]
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local spiderEnabled = false
+
+_G.toggleSpider = function()
+    spiderEnabled = not spiderEnabled
+
+    local notificationContent = spiderEnabled and "Spider On" or "Spider Off"
+    OrionLib:MakeNotification({
+        Name = "Spider",
+        Content = notificationContent,
+        Image = "rbxassetid://4483345998",
+        Time = 3
+    })
+
+    if not spiderEnabled then
+        -- ทำงานที่ต้องการหลังปิด Spider
+        return
+    end
+end
+
+game:GetService("RunService").Stepped:Connect(function()
+    if spiderEnabled then
+        -- ทำงาน Spider เมื่อเปิด
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        local rootPart = character:FindFirstChild("HumanoidRootPart")
+
+        if humanoid and rootPart then
+            local direction = Vector3.new(0, 0, 1) -- ทิศทางของการปีน (เข้าไปข้างหน้า)
+            local rotation = humanoid:GetAppliedRotation()
+
+            direction = rotation:PointToWorldSpace(direction)
+            local newPosition = rootPart.Position + direction * 4 -- ปรับตำแหน่งเพื่อให้มันไม่ติดกับกำแพง
+
+            rootPart.CFrame = CFrame.new(newPosition, newPosition + direction)
+        end
+    end
+
+    -- ทำงานที่ต้องการใน loop ทุกรอบ
+    print("(Loop ทำงาน)")
+end)
