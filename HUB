@@ -1,0 +1,28 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "ZolClient", HidePremium = false, SaveConfig = true, IntroText ="Zol"})
+
+local Tab = Window:MakeTab({
+	Name = "client",
+	Icon = "",
+	PremiumOnly = false
+})
+
+Tab:AddToggle({
+	Name = "This is a toggle!",
+	Default = false,
+	Callback = function(Value)
+		_G.Toggle(Value)
+	end    
+})
+
+-- ตั้งค่าเริ่มต้นของตัวแปร Toggle เป็น false
+_G.Toggle = false
+
+-- ตรวจสอบเงื่อนไข
+if _G.Toggle then
+
+    print("Toggle เปิด")
+else
+    -- ทำงานเมื่อ _G.Toggle เป็น false
+    print("Toggle ปิด")
+end
