@@ -17,7 +17,7 @@ Tab:AddToggle({
     Name = "🕷Spider",
     Default = false,
     Callback = function(Value)
-        _G.toggleSpider(Value) -- เรียกฟังก์ชัน toggle ใน callback
+        _G.toggleSpider() -- เรียกฟังก์ชัน toggle ใน callback
     end    
 })
 
