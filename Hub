@@ -1,143 +1,50 @@
+-- สร้างสคริปต์ใหม่ของคลาส Script
+local Script = Instance.new("Spider Wall")
 
+-- กำหนดโค้ดที่จะให้สคริปต์ทำงาน
+Script.Source = [[-- ตัวอย่าง local script สำหรับ Roblox Studio
 
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local player = game.Players.LocalPlayer
+local humanoid = player.Character:WaitForChild("Humanoid")
 
-local Window = OrionLib:MakeWindow({Name = "🔮Zol Client", HidePremium = false, SaveConfig = true, ConfigFolder = "SSSak"})
+-- ตัวแปรเพิ่มเติมสำหรับการตรวจสอบ
+local canClimb = true  -- ตั้งค่าเป็น true เพื่อให้ตัวละครสามารถปีน
 
-local Tab = Window:MakeTab({
-	Name = "📜Client",
-	Icon = "",
-	PremiumOnly = false
-})
-local Section = Tab:AddSection({
-	Name = "Our Client function"
-})
+-- ฟังก์ชั่นสำหรับการกระโดด
+local function jump()
+    if canClimb then
+        humanoid:Move(Vector3.new(0, 10, 0))  -- ปรับตำแหน่งที่กระโดดขึ้นไป
+    end
+end
 
-Tab:AddButton({
-	Name = "🕷Spider",
-	Callback = function()
-      	_G.toggleSpider	
-  	end    
-})
+-- ฟังก์ชั่นสำหรับการตรวจสอบการชนกำแพง
+local function onTouched(hit)
+    if hit:IsA("Part") and hit:IsA("Wall") then
+        canClimb = true  -- ชนกำแพงแล้วสามารถปีนได้
+    end
+end
 
---[[
-Name = <string> - The name of the button.
-Callback = <function> - The function of the button.
+-- ฟังก์ชั่นสำหรับการตรวจสอบเมื่อหลุดพื้นหรืออยู่ในอากาศ
+local function onStateChanged(oldState, newState)
+    if newState == Enum.HumanoidStateType.Freefall or newState == Enum.HumanoidStateType.Seated then
+        canClimb = false  -- หลุดพื้นหรืออยู่ในอากาศ ไม่สามารถปีนได้
+    end
+end
+
+-- ให้กระโดดเมื่อผู้เล่นกดปุ่ม spacebar
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
+    if not gameProcessedEvent and input.KeyCode == Enum.KeyCode.Space then
+        jump()
+    end
+end)
+
+-- ตั้งค่าการตรวจสอบการชนกำแพง
+humanoid.Touched:Connect(onTouched)
+humanoid.StateChanged:Connect(onStateChanged)
 ]]
 
-local toggleEnabled = false
+-- นำสคริปต์มาตั้งเป็นลูกของ Player's PlayerScripts (หรืออ็อบเจ็กต์ใด ๆ ที่เป็น Container ได้)
+Script.Parent = game.Players.LocalPlayer:WaitForChild("StarterPlayerScripts")
 
-_G.toggle = function()
-    toggleEnabled = not toggleEnabled
-    print("Toggle " .. (toggleEnabled and "เปิด" or "ปิด"))
-
-    if not toggleEnabled then
-        -- ทำงานที่ต้องการหลังปิด toggle
-        OrionLib:MakeNotification({
-            Name = "Toggle",
-            Content = "Client Off",
-            Image = "rbxassetid://4483345998",
-            Time = 3
-        })
-        return -- หรือจะใช้ break ถ้าคุณอยู่ในลูป
-    end
-
-    OrionLib:MakeNotification({
-        Name = "Toggle",
-        Content = "Client On",
-        Image = "rbxassetid://4483345998",
-        Time = 3
-    })
-    
-
-end
-
-game:GetService("RunService").Stepped:Connect(function()
-    if toggleEnabled then
-        -- ทำงานที่ต้องการใน loop เมื่อ toggle เปิด
-        print("(Loop ทำงาน)")
-    else
-        -- ทำงานที่ต้องการใน loop เมื่อ toggle ปิด
-        print("(Loop หยุด)")
-        return -- หรือจะใช้ break ถ้าคุณอยู่ในลูป
-    end
-end)
---////////////////////////////////////////////////////////////////////////////////////////////////[]
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-
-local noClipEnabled = false
-
-_G.toggleNoClip = function()
-    noClipEnabled = not noClipEnabled
-
-    local notificationContent = noClipEnabled and "NoClip On" or "NoClip Off"
-    OrionLib:MakeNotification({
-        Name = "Noclip",
-        Content = notificationContent,
-        Image = "rbxassetid://4483345998",
-        Time = 3
-    })
-
-    if not noClipEnabled then
-        -- ทำงานที่ต้องการหลังปิด NoClip
-        return
-    end
-end
-
-game:GetService("RunService").Stepped:Connect(function()
-    if noClipEnabled then
-        -- ทำงาน NoClip เมื่อเปิด
-        for _, descendant in pairs(character:GetDescendants()) do
-            if descendant:IsA("BasePart") then
-                descendant.CanCollide = false
-            end
-        end
-    end
-
-    -- ทำงานที่ต้องการใน loop ทุกรอบ
-    print("(Loop ทำงาน)")
-end)
---////////////////////////////////////////////////////////////////////////////////////////////////[]
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-
-local spiderEnabled = false
-
-_G.toggleSpider = function()
-    spiderEnabled = not spiderEnabled
-
-    local notificationContent = spiderEnabled and "Spider On" or "Spider Off"
-    OrionLib:MakeNotification({
-        Name = "Spider",
-        Content = notificationContent,
-        Image = "rbxassetid://4483345998",
-        Time = 3
-    })
-
-    if not spiderEnabled then
-        -- ทำงานที่ต้องการหลังปิด Spider
-        return
-    end
-end
-
-game:GetService("RunService").Stepped:Connect(function()
-    if spiderEnabled then
-        -- ทำงาน Spider เมื่อเปิด
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-        local rootPart = character:FindFirstChild("HumanoidRootPart")
-
-        if humanoid and rootPart then
-            local direction = Vector3.new(0, 0, 1) -- ทิศทางของการปีน (เข้าไปข้างหน้า)
-            local rotation = humanoid:GetAppliedRotation()
-
-            direction = rotation:PointToWorldSpace(direction)
-            local newPosition = rootPart.Position + direction * 4 -- ปรับตำแหน่งเพื่อให้มันไม่ติดกับกำแพง
-
-            rootPart.CFrame = CFrame.new(newPosition, newPosition + direction)
-        end
-    end
-
-    -- ทำงานที่ต้องการใน loop ทุกรอบ
-    print("(Loop ทำงาน)")
-end)
+-- หรือถ้าต้องการให้สคริปต์ทำงานใน Player's Backpack
+-- myScript.Parent = game.Players.LocalPlayer.Backpack
