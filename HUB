@@ -8,14 +8,16 @@ local Tab = Window:MakeTab({
 })
 
 local isButtonEnabled = false
-
+Tab:AddLabel("DeathDR Status : ")
 Tab:AddButton({
-    Name = "",
+    Name = "DeathDR (On/Off)",
     Callback = function()
         isButtonEnabled = not isButtonEnabled  -- สลับสถานะ
         if isButtonEnabled then
+            CoolLabel:Set("Label New!")
+
 			OrionLib:MakeNotification({
-				Name = "Spider",
+				Name = "DeathDR",
 				Content = "On Cum",
 				Image = "0",
 				Time = 5
@@ -24,55 +26,66 @@ Tab:AddButton({
 local SScript = Instance.new("Script")
 
 -- กำหนดโค้ดที่จะให้สคริปต์ทำงาน
-SScript.Source = [[--ตัวอย่าง local script สำหรับ Roblox Studio
+SScript.Source = [[--- ตัวอย่าง local script สำหรับ Roblox Studio
 
 local player = game.Players.LocalPlayer
-local humanoid = player.Character:WaitForChild("Humanoid")
+local respawnLocation = workspace.RespawnLocation -- ตั้งชื่อตามที่คุณต้องการ
 
--- ตัวแปรเพิ่มเติมสำหรับการตรวจสอบ
-local canClimb = true  -- ตั้งค่าเป็น true เพื่อให้ตัวละครสามารถปีน
+-- ฟังก์ชั่นสำหรับ respawn ที่ตาย
+local function respawn()
+    local respawnPart = Instance.new("Part")
+    respawnPart.Size = Vector3.new(5, 1, 5)
+    respawnPart.Anchored = true
+    respawnPart.CanCollide = false
+    respawnPart.Position = respawnLocation.Position
+    respawnPart.Parent = workspace  -- กำหนดให้เป็นลูกของ workspace
 
--- ฟังก์ชั่นสำหรับการกระโดด
-local function jump()
-    if canClimb then
-        humanoid:Move(Vector3.new(0, 10, 0))  -- ปรับตำแหน่งที่กระโดดขึ้นไป
-    end
+    -- คืนตัวละครไปยังตำแหน่ง respawnLocation ด้วย TweenPosition
+    local humanoidRootPart = player.Character:WaitForChild("HumanoidRootPart")
+    
+    local startPos = humanoidRootPart.Position
+    local endPos = respawnPart.Position
+
+    local tweenTime = 1 -- ระยะเวลา (วินาที)
+
+    -- สร้าง TweenPosition ด้วย Instance.new
+    local tween = Instance.new("TweenPosition")
+    tween.Part0 = humanoidRootPart
+    tween.Position = endPos
+    tween.Time = tweenTime
+    tween.Parent = humanoidRootPart
+
+    -- ลบ respawnPart เมื่อ tween เสร็จสิ้น
+    wait(tweenTime) -- รอให้ tween เสร็จสิ้น
+    respawnPart:Destroy()
 end
 
--- ฟังก์ชั่นสำหรับการตรวจสอบการชนกำแพง
-local function onTouched(hit)
-    if hit:IsA("Part") and hit:IsA("Wall") then
-        canClimb = true  -- ชนกำแพงแล้วสามารถปีนได้
-    end
-end
-
--- ฟังก์ชั่นสำหรับการตรวจสอบเมื่อหลุดพื้นหรืออยู่ในอากาศ
-local function onStateChanged(oldState, newState)
-    if newState == Enum.HumanoidStateType.Freefall or newState == Enum.HumanoidStateType.Seated then
-        canClimb = false  -- หลุดพื้นหรืออยู่ในอากาศ ไม่สามารถปีนได้
-    end
-end
-
--- ให้กระโดดเมื่อผู้เล่นกดปุ่ม spacebar
-game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
-    if not gameProcessedEvent and input.KeyCode == Enum.KeyCode.Space then
-        jump()
-    end
+-- เมื่อตัวละครตาย
+player.CharacterAdded:Connect(function(character)
+    character:WaitForChild("Humanoid").Died:Connect(respawn)
 end)
 
--- ตั้งค่าการตรวจสอบการชนกำแพง
-humanoid.Touched:Connect(onTouched)
-humanoid.StateChanged:Connect(onStateChanged)
+-- ให้ respawn เมื่อตัวละคร spawn ครั้งแรก
+if player.Character and player.Character:FindFirstChild("Humanoid") then
+    respawn()
+end
 ]]
 
-SScript.Name = "Spider_Wall"
+SScript.Name = "DeathDR"
 
 -- นำสคริปต์มาตั้งเป็นลูกของ Player's PlayerScripts (หรืออ็อบเจ็กต์ใด ๆ ที่เป็น Container ได้)
 SScript.Parent = game.Players.LocalPlayer:WaitForChild("StarterPlayerScripts")
 
 
         else
-            print("Button is disabled")
+
+            OrionLib:MakeNotification({
+				Name = "DeathDR",
+				Content = "Off Cum",
+				Image = "0",
+				Time = 5
+			})
+            game.Players.LocalPlayer:WaitForChild("StarterPlayerScripts").DeathDR:Destroy()
         end
     end
 })
