@@ -7,23 +7,74 @@ local Tab = Window:MakeTab({
 	PremiumOnly = false
 })
 
-Tab:AddToggle({
-	Name = "spider",
-	Default = false,
-	Callback = function(Value)
-		_G.Spider = Value
-Spider()
-	end    
+local isButtonEnabled = false
+
+Tab:AddButton({
+    Name = "",
+    Callback = function()
+        isButtonEnabled = not isButtonEnabled  -- สลับสถานะ
+        if isButtonEnabled then
+			OrionLib:MakeNotification({
+				Name = "Spider",
+				Content = "On Cum",
+				Image = "0",
+				Time = 5
+			})
+ -- สร้างสคริปต์ใหม่ของคลาส Script
+local SScript = Instance.new("Script")
+
+-- กำหนดโค้ดที่จะให้สคริปต์ทำงาน
+SScript.Source = [[--ตัวอย่าง local script สำหรับ Roblox Studio
+
+local player = game.Players.LocalPlayer
+local humanoid = player.Character:WaitForChild("Humanoid")
+
+-- ตัวแปรเพิ่มเติมสำหรับการตรวจสอบ
+local canClimb = true  -- ตั้งค่าเป็น true เพื่อให้ตัวละครสามารถปีน
+
+-- ฟังก์ชั่นสำหรับการกระโดด
+local function jump()
+    if canClimb then
+        humanoid:Move(Vector3.new(0, 10, 0))  -- ปรับตำแหน่งที่กระโดดขึ้นไป
+    end
+end
+
+-- ฟังก์ชั่นสำหรับการตรวจสอบการชนกำแพง
+local function onTouched(hit)
+    if hit:IsA("Part") and hit:IsA("Wall") then
+        canClimb = true  -- ชนกำแพงแล้วสามารถปีนได้
+    end
+end
+
+-- ฟังก์ชั่นสำหรับการตรวจสอบเมื่อหลุดพื้นหรืออยู่ในอากาศ
+local function onStateChanged(oldState, newState)
+    if newState == Enum.HumanoidStateType.Freefall or newState == Enum.HumanoidStateType.Seated then
+        canClimb = false  -- หลุดพื้นหรืออยู่ในอากาศ ไม่สามารถปีนได้
+    end
+end
+
+-- ให้กระโดดเมื่อผู้เล่นกดปุ่ม spacebar
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
+    if not gameProcessedEvent and input.KeyCode == Enum.KeyCode.Space then
+        jump()
+    end
+end)
+
+-- ตั้งค่าการตรวจสอบการชนกำแพง
+humanoid.Touched:Connect(onTouched)
+humanoid.StateChanged:Connect(onStateChanged)
+]]
+
+SScript.Name = "Spider_Wall"
+
+-- นำสคริปต์มาตั้งเป็นลูกของ Player's PlayerScripts (หรืออ็อบเจ็กต์ใด ๆ ที่เป็น Container ได้)
+SScript.Parent = game.Players.LocalPlayer:WaitForChild("StarterPlayerScripts")
+
+
+        else
+            print("Button is disabled")
+        end
+    end
 })
 
--- ตั้งค่าเริ่มต้นของตัวแปร Toggle เป็น false
-_G.Spider = false
 
--- ตรวจสอบเงื่อนไข
-if _G.Spider then
-
-    print("Toggle เปิด")
-else
-    -- ทำงานเมื่อ _G.Toggle เป็น false
-    print("Toggle ปิด")
-end
