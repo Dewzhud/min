@@ -6,86 +6,70 @@ local Tab = Window:MakeTab({
 	Icon = "",
 	PremiumOnly = false
 })
-
-local isButtonEnabled = false
 Tab:AddLabel("client")
+_G.createdScript = nil
+
 Tab:AddButton({
-    Name = "DeathDR (On/Off)",
+    Name = "Death Direct test",
     Callback = function()
-        isButtonEnabled = not isButtonEnabled  -- สลับสถานะ
-        if isButtonEnabled then
-			OrionLib:MakeNotification({
-				Name = "DeathDR",
-				Content = "On Cum",
-				Image = "0",
-				Time = 5
-			})
- -- สร้างสคริปต์ใหม่ของคลาส Script
-local SScript = Instance.new("Script")
+        isButton1Enabled = not isButton1Enabled
+        
+        if isButton1Enabled then
+            -- ให้ createdScript ชี้ไปยังสคริปต์ใหม่
+            _G.createdScript = Instance.new("Script")
+            _G.createdScript.Source = [[
+                local player = game.Players.LocalPlayer
+                local respawnLocation = workspace.RespawnLocation -- ตั้งชื่อตามที่คุณต้องการ
+                
+                -- ฟังก์ชั่นสำหรับ respawn ที่ตาย
+                local function respawn()
+                    local respawnPart = Instance.new("Part")
+                    respawnPart.Size = Vector3.new(5, 1, 5)
+                    respawnPart.Anchored = true
+                    respawnPart.CanCollide = false
+                    respawnPart.Position = respawnLocation.Position
+                    respawnPart.Parent = workspace  -- กำหนดให้เป็นลูกของ workspace
+                
+                    -- คืนตัวละครไปยังตำแหน่ง respawnLocation ด้วย TweenPosition
+                    local humanoidRootPart = player.Character:WaitForChild("HumanoidRootPart")
+                    
+                    local startPos = humanoidRootPart.Position
+                    local endPos = respawnPart.Position
+                
+                    local tweenTime = 1 -- ระยะเวลา (วินาที)
+                
+                    -- สร้าง TweenPosition ด้วย Instance.new
+                    local tween = Instance.new("TweenPosition")
+                    tween.Part0 = humanoidRootPart
+                    tween.Position = endPos
+                    tween.Time = tweenTime
+                    tween.Parent = humanoidRootPart
+                
+                    -- ลบ respawnPart เมื่อ tween เสร็จสิ้น
+                    wait(tweenTime) -- รอให้ tween เสร็จสิ้น
+                    respawnPart:Destroy()
+                end
+                
+                -- เมื่อตัวละครตาย
+                player.CharacterAdded:Connect(function(character)
+                    character:WaitForChild("Humanoid").Died:Connect(respawn)
+                end)
+                
+                -- ให้ respawn เมื่อตัวละคร spawn ครั้งแรก
+                if player.Character and player.Character:FindFirstChild("Humanoid") then
+                    respawn()
+                end
+                ]]
 
--- กำหนดโค้ดที่จะให้สคริปต์ทำงาน
-SScript.Source = [[--- ตัวอย่าง local script สำหรับ Roblox Studio
-
-local player = game.Players.LocalPlayer
-local respawnLocation = workspace.RespawnLocation -- ตั้งชื่อตามที่คุณต้องการ
-
--- ฟังก์ชั่นสำหรับ respawn ที่ตาย
-local function respawn()
-    local respawnPart = Instance.new("Part")
-    respawnPart.Size = Vector3.new(5, 1, 5)
-    respawnPart.Anchored = true
-    respawnPart.CanCollide = false
-    respawnPart.Position = respawnLocation.Position
-    respawnPart.Parent = workspace  -- กำหนดให้เป็นลูกของ workspace
-
-    -- คืนตัวละครไปยังตำแหน่ง respawnLocation ด้วย TweenPosition
-    local humanoidRootPart = player.Character:WaitForChild("HumanoidRootPart")
-    
-    local startPos = humanoidRootPart.Position
-    local endPos = respawnPart.Position
-
-    local tweenTime = 1 -- ระยะเวลา (วินาที)
-
-    -- สร้าง TweenPosition ด้วย Instance.new
-    local tween = Instance.new("TweenPosition")
-    tween.Part0 = humanoidRootPart
-    tween.Position = endPos
-    tween.Time = tweenTime
-    tween.Parent = humanoidRootPart
-
-    -- ลบ respawnPart เมื่อ tween เสร็จสิ้น
-    wait(tweenTime) -- รอให้ tween เสร็จสิ้น
-    respawnPart:Destroy()
-end
-
--- เมื่อตัวละครตาย
-player.CharacterAdded:Connect(function(character)
-    character:WaitForChild("Humanoid").Died:Connect(respawn)
-end)
-
--- ให้ respawn เมื่อตัวละคร spawn ครั้งแรก
-if player.Character and player.Character:FindFirstChild("Humanoid") then
-    respawn()
-end
-]]
-
-SScript.Name = "DeathDR"
-
--- นำสคริปต์มาตั้งเป็นลูกของ Player's PlayerScripts (หรืออ็อบเจ็กต์ใด ๆ ที่เป็น Container ได้)
-SScript.Parent = game.Players.LocalPlayer:WaitForChild("StarterPlayerScripts")
-
-
+                _G.createdScript.Parent = game:GetService("StarterPlayerScripts")
+            
         else
-
-            OrionLib:MakeNotification({
-				Name = "DeathDR",
-				Content = "Off Cum",
-				Image = "0",
-				Time = 5
-			})
-            game.Players.LocalPlayer:WaitForChild("StarterPlayerScripts").DeathDR:Destroy()
+            -- ให้ createdScript เป็น nil เพื่อล้าง reference
+            _G.createdScript = nil
         end
     end
 })
+
+
 
 
