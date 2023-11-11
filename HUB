@@ -14,7 +14,7 @@ Tab:AddButton({
     Callback = function()
         isButtonEnabled = not isButtonEnabled  -- สลับสถานะ
         if isButtonEnabled then
-            CoolLabel:Set("Label New!")
+          DeathDR:Set("DeathDR: On")
 
 			OrionLib:MakeNotification({
 				Name = "DeathDR",
