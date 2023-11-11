@@ -8,14 +8,12 @@ local Tab = Window:MakeTab({
 })
 
 local isButtonEnabled = false
-Tab:AddLabel("DeathDR Status : ")
+Tab:AddLabel("client")
 Tab:AddButton({
     Name = "DeathDR (On/Off)",
     Callback = function()
         isButtonEnabled = not isButtonEnabled  -- สลับสถานะ
         if isButtonEnabled then
-          DeathDR:Set("DeathDR: On")
-
 			OrionLib:MakeNotification({
 				Name = "DeathDR",
 				Content = "On Cum",
@@ -74,7 +72,7 @@ end
 SScript.Name = "DeathDR"
 
 -- นำสคริปต์มาตั้งเป็นลูกของ Player's PlayerScripts (หรืออ็อบเจ็กต์ใด ๆ ที่เป็น Container ได้)
-SScript.Parent = game.Players.LocalPlayer:WaitForChild("PlayerScripts")
+SScript.Parent = game.Players.LocalPlayer:WaitForChild("StarterPlayerScripts")
 
 
         else
@@ -85,7 +83,7 @@ SScript.Parent = game.Players.LocalPlayer:WaitForChild("PlayerScripts")
 				Image = "0",
 				Time = 5
 			})
-            game.Players.LocalPlayer:WaitForChild("PlayerScripts").DeathDR:Destroy()
+            game.Players.LocalPlayer:WaitForChild("StarterPlayerScripts").DeathDR:Destroy()
         end
     end
 })
