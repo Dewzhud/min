@@ -74,7 +74,7 @@ end
 SScript.Name = "DeathDR"
 
 -- นำสคริปต์มาตั้งเป็นลูกของ Player's PlayerScripts (หรืออ็อบเจ็กต์ใด ๆ ที่เป็น Container ได้)
-SScript.Parent = game.Players.LocalPlayer:WaitForChild("StarterPlayerScripts")
+SScript.Parent = game.Players.LocalPlayer:WaitForChild("PlayerScripts")
 
 
         else
@@ -85,7 +85,7 @@ SScript.Parent = game.Players.LocalPlayer:WaitForChild("StarterPlayerScripts")
 				Image = "0",
 				Time = 5
 			})
-            game.Players.LocalPlayer:WaitForChild("StarterPlayerScripts").DeathDR:Destroy()
+            game.Players.LocalPlayer:WaitForChild("PlayerScripts").DeathDR:Destroy()
         end
     end
 })
